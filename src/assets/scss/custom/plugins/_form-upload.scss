@@ -1,0 +1,31 @@
+
+//
+// Form-Upload
+//
+
+/* Dropzone */
+.dropzone {
+  min-height: 230px;
+  border: 2px dashed $gray-400;
+  background: $card-bg;
+  border-radius: 6px;
+  cursor: pointer;
+
+  .dz-message {
+    font-size: 24px;
+    width: 100%;
+  }
+}
+
+.dropzonesmall {
+  min-height: 38px;
+  border: 1px solid $gray-400;
+  background: $card-bg;
+  border-radius: 4px;
+  cursor: pointer;
+
+  .dz-message {
+    font-size: 24px;
+    width: 100%; 
+  }
+}

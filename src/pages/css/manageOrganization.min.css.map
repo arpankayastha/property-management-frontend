@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,aAAa,AAAA,CACX,OAAO,CAAE,eAAe,CACxB,cAAc,CAAE,iBAAiB,CAClC,AAED,AAAA,eAAe,AAAA,CACb,UAAU,CAAE,gBAAgB,CAC5B,QAAQ,CAAE,eAAe,CAC1B,AAED,AAAA,aAAa,AAAA,CACX,OAAO,CAAE,oBAAoB,CAC9B",
+    "sources": [
+        "../Organizations/manageOrganization.scss"
+    ],
+    "names": [],
+    "file": "manageOrganization.min.css"
+}

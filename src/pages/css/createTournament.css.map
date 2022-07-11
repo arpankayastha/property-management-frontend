@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,aAAa,CAAA;EACX,OAAO,EAAE,eAAe;EACxB,cAAc,EAAE,iBAAiB;CAClC;;AAED,AAAA,eAAe,CAAA;EACb,UAAU,EAAE,gBAAgB;EAC5B,QAAQ,EAAE,eAAe;CAC1B;;AAED,AAAA,aAAa,CAAA;EACX,OAAO,EAAE,oBAAoB;CAC9B",
+    "sources": [
+        "../Tournament/createTournament.scss"
+    ],
+    "names": [],
+    "file": "createTournament.css"
+}
