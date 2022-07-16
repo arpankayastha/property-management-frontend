@@ -9,36 +9,37 @@ import {deleteEntry, getList} from "../../functions/apiRequest";
 import DeleteConfirm from "../../components/Common/DeleteConfirm";
 
 
-const PropertyList = (props) => {
-    const [property, setProperty] = useState([])
-    const [totalProperty, setTotalProperty] = useState(0)
-    const [isSpinner, setIsSpinner] = useState(false)
+const HotelList = (props) => {
+    const [hotel, setHotel] = useState([])
+    const [totalHotel, setTotalHotel] = useState(0)
+    const [isSpinner, setIsSpinner] = useState(false);
     const [inProgress, setInProgress] = useState(false);
     const [deleteIndex, setDeleteIndex] = useState();
+
 
     const params = new URLSearchParams(window.location.search)
     const pageNumber = params.get('page') ?? 1;
     const [state, setState] = useState({
         page: pageNumber ? parseInt(pageNumber) : 1,
-        data: property,
+        data: hotel,
         sizePerPage: 20
     })
 
-    function getPropertyListFun(page, sizePerPage, searchText, sortField, sortOrder) {
+    function getHotelListFun(page, sizePerPage, searchText, sortField, sortOrder) {
         getList({
             pageNumber: page ?? 1,
             sizePerPage: sizePerPage ?? 20,
             sortField,
             sortOrder,
             searchText
-        }, 'properties')
+        }, 'hotels')
             .then(response => response.json())
             .then(response => {
                 if (response.success) {
                     setIsSpinner(false)
-                    setProperty(response.data.properties)
-                    setTotalProperty(response.data.total_count)
-                    setState({data: response.data.properties})
+                    setHotel(response.data.hotels)
+                    setTotalHotel(response.data.total_count)
+                    setState({data: response.data.hotels})
                 } else {
                     toast.error(response.message)
                 }
@@ -46,9 +47,9 @@ const PropertyList = (props) => {
     }
 
     React.useEffect(() => {
-        getPropertyListFun(state.page, state.sizePerPage, "", null, null)
+        getHotelListFun(state.page, state.sizePerPage, "", null, null)
 
-        if (!checkPermissions("property_list")) {
+        if (!checkPermissions("hotel_list")) {
             localStorage.clear()
             window.location.href = '/login'
         }
@@ -68,15 +69,42 @@ const PropertyList = (props) => {
             dataField: 'name',
             text: 'Name',
             sort: true,
-            formatter: propertyDetail,
+            formatter: hotelDetail,
             headerAlign: 'left',
             align: 'left',
             sortCaret: sortCaret,
             headerStyle: {cursor: 'pointer'}
         },
         {
-            dataField: 'propertyId',
-            text: 'Property ID',
+            dataField: 'location',
+            text: 'Location',
+            sort: true,
+            headerAlign: 'left',
+            align: 'left',
+            sortCaret: sortCaret,
+            headerStyle: {cursor: 'pointer'}
+        },
+        {
+            dataField: 'address',
+            text: 'Address',
+            sort: true,
+            headerAlign: 'left',
+            align: 'left',
+            sortCaret: sortCaret,
+            headerStyle: {cursor: 'pointer'}
+        },
+        {
+            dataField: 'contactPerson',
+            text: 'Contact Person',
+            sort: true,
+            headerAlign: 'left',
+            align: 'left',
+            sortCaret: sortCaret,
+            headerStyle: {cursor: 'pointer'}
+        },
+        {
+            dataField: 'contactNumber',
+            text: 'Contact Number',
             sort: true,
             headerAlign: 'left',
             align: 'left',
@@ -88,8 +116,8 @@ const PropertyList = (props) => {
             text: "Action",
             formatter: actionEvent,
             sort: false,
-            headerAlign: 'left',
-            align: 'left',
+            headerAlign: 'center',
+            align: 'center',
             headerStyle: {cursor: 'pointer'}
         }
     ];
@@ -101,13 +129,13 @@ const PropertyList = (props) => {
                     <Link
                         className="btn btn-primary waves-effect waves-light me-2 mb-1"
                         as={Link}
-                        to={`/property/${row.id}/edit`}
+                        to={`/hotel/${row.id}/edit`}
                     >
                         <i className="fas fa-edit"/>
                     </Link>
                     <DeleteConfirm
                         title={"Are you sure?"}
-                        text={"Once deleted, you will not be able to recover this property data!"}
+                        text={"Once deleted, you will not be able to recover this hotel data!"}
                         onConfirm={() => deleteItem(row.id, rowIndex)}
                     />
                 </div>
@@ -115,11 +143,11 @@ const PropertyList = (props) => {
         );
     }
 
-    function propertyDetail(cell, row, rowIndex, formatExtraData) {
+    function hotelDetail(cell, row, rowIndex, formatExtraData) {
         return (
             <>
-                {checkPermissions("property_view") ?
-                    <NavLink className="ps-0" tag={RRNavLink} to={`/property/${encodeURIComponent(row.id)}/general`}>
+                {checkPermissions("hotel_view") ?
+                    <NavLink className="ps-0" tag={RRNavLink} to={`/hotel/${encodeURIComponent(row.id)}/general`}>
                         <span className="d-sm-block">  {row.name}</span>
                     </NavLink>
                     :
@@ -131,6 +159,20 @@ const PropertyList = (props) => {
         );
     }
 
+    const delaySearch = useCallback(debounce(({page, sizePerPage, searchText, sortField, sortOrder}) => {
+        getHotelListFun(page, sizePerPage, searchText, sortField, sortOrder)
+    }, 750));
+
+    const handleTableChange = (type, {page, sizePerPage, sortField, sortOrder, searchText}) => {
+        props.history.push(`hotel?page=${page}`)
+        setIsSpinner(true)
+        if (type === "search") {
+            delaySearch({page, sizePerPage, searchText, sortField, sortOrder})
+        } else {
+            getHotelListFun(page, sizePerPage, searchText, sortField, sortOrder)
+        }
+    }
+
     const deleteItem = async (id, index) => {
         if (inProgress) {
             return false
@@ -138,7 +180,7 @@ const PropertyList = (props) => {
             setDeleteIndex(index)
             try {
                 setInProgress(true);
-                deleteEntry(id, 'properties')
+                deleteEntry(id, 'hotels')
                     .then(response => response.json())
                     .then(response => {
                         if (response.success) {
@@ -146,9 +188,9 @@ const PropertyList = (props) => {
                             let list = [...state.data];
                             if (list && list.length > 0) {
                                 list.splice(deleteIndex, 1);
-                                setProperty(list)
+                                setHotel(list)
                                 setState({data: list})
-                                setTotalProperty(totalProperty - 1)
+                                setTotalHotel(totalHotel - 1)
                             }
                             toast.success(response.message);
                         } else {
@@ -162,20 +204,6 @@ const PropertyList = (props) => {
         }
     }
 
-    const delaySearch = useCallback(debounce(({page, sizePerPage, searchText, sortField, sortOrder}) => {
-        getPropertyListFun(page, sizePerPage, searchText, sortField, sortOrder)
-    }, 750));
-
-    const handleTableChange = (type, {page, sizePerPage, sortField, sortOrder, searchText}) => {
-        props.history.push(`property?page=${page}`)
-        setIsSpinner(true)
-        if (type === "search") {
-            delaySearch({page, sizePerPage, searchText, sortField, sortOrder})
-        } else {
-            getPropertyListFun(page, sizePerPage, searchText, sortField, sortOrder)
-        }
-    }
-
     return (
         <React.Fragment>
             <div className="page-content">
@@ -186,13 +214,13 @@ const PropertyList = (props) => {
                                 <CardBody>
                                     <Row className="align-items-center">
                                         <Col className="col-sm-6 col-12">
-                                            <h3 className="my-3">Property </h3>
+                                            <h3 className="my-3">Hotel </h3>
                                         </Col>
                                         <Col className="col-sm-6 col-12">
                                             <div className="d-sm-block d-none float-sm-end">
                                                 <div className="d-sm-flex my-3">
-                                                    {checkPermissions("property_add") &&
-                                                    <Link as={Link} to={`property/create`}
+                                                    {checkPermissions("hotel_add") &&
+                                                    <Link as={Link} to={`hotel/create`}
                                                           className="btn btn-primary me-2"><i
                                                         className="uil-file-plus font-size-18 me-1 text-white"/>Create</Link>
                                                     }
@@ -200,9 +228,9 @@ const PropertyList = (props) => {
                                             </div>
                                             <div className="d-sm-none d-block float-sm-end">
                                                 <div className="d-flex mb-3">
-                                                    {checkPermissions("property_add") &&
+                                                    {checkPermissions("hotel_add") &&
                                                     <Link className="btn btn-primary me-2" as={Link}
-                                                          to={`property/create`}><i
+                                                          to={`hotel/create`}><i
                                                         className="uil-file-plus font-size-18 me-1 text-white"/></Link>
                                                     }
                                                 </div>
@@ -221,7 +249,7 @@ const PropertyList = (props) => {
                                         data={state.data}
                                         page={state.page}
                                         sizePerPage={state.sizePerPage}
-                                        totalSize={totalProperty}
+                                        totalSize={totalHotel}
                                         onTableChange={handleTableChange}
                                         columns={columns}
                                         noDataIndication={'No Data Found'}
@@ -236,4 +264,4 @@ const PropertyList = (props) => {
         </React.Fragment>
     )
 }
-export default PropertyList
+export default HotelList

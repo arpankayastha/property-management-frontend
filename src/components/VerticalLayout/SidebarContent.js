@@ -112,7 +112,7 @@ const SidebarContent = props => {
                     <ul className="metismenu list-unstyled" id="side-menu">
                         <li>
                             <Link to="/#" className="waves-effect">
-                                <i className="uil-home-alt"/>
+                                <i className="uil-dashboard"/>
                                 <span> Dashboard</span>
                             </Link>
                         </li>
@@ -123,14 +123,20 @@ const SidebarContent = props => {
                             </Link>
                         </li>
                         <li>
+                            <Link to="/hotel" className="waves-effect">
+                                <i className="uil-building"/>
+                                <span> Hotel</span>
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="/property" className="waves-effect">
-                                <i className="uil-users-alt"/>
+                                <i className="uil-box"/>
                                 <span> Property</span>
                             </Link>
                         </li>
                         <li>
                             <Link to="/lock" className="waves-effect">
-                                <i className="uil-users-alt"/>
+                                <i className="uil-lock"/>
                                 <span> Locks History</span>
                             </Link>
                         </li>

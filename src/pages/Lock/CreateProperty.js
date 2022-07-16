@@ -84,7 +84,7 @@ const FormValidations = (props) => {
                                                         name="email"
                                                         placeholder="Email"
                                                         type="email"
-                                                        errorMessage=" Please enter vaild email id."
+                                                        errorMessage=" Please enter valid email id."
                                                         className="form-control"
                                                         validate={{required: {value: true}}}
                                                         id="email"

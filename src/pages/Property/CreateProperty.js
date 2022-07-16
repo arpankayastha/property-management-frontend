@@ -6,13 +6,37 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 //Import Breadcrumb
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {get} from "../../functions/apiRequest";
+import {get, getList} from "../../functions/apiRequest";
 
 const FormValidations = (props) => {
     let {propertyId} = props.match.params;
 
     const [inProgress, setInProgress] = useState(false)
     const [defaultValues, setDefaultValues] = useState()
+    const [hotels, setHotels] = useState([]);
+
+    React.useEffect(() => {
+        if (hotels.length === 0) {
+            getList({
+                pageNumber: 1,
+                sizePerPage: 20,
+                sortField: null,
+                sortOrder: null,
+                searchText: null
+            }, 'hotels')
+                .then(response => response.json())
+                .then(response => {
+                    if (response.success && response.data.hotels.length) {
+                        setHotels(response.data.hotels)
+                    } else {
+                        toast.error("No hotels available to assign with properties. Create hotel first.");
+                        setTimeout(() => {
+                            window.history.back();
+                        }, 1500);
+                    }
+                });
+        }
+    }, [propertyId]);
 
     React.useEffect(() => {
         if (propertyId) {
@@ -79,29 +103,15 @@ const FormValidations = (props) => {
                                             </Col>
                                             <Col md="4">
                                                 <div className="mb-3">
-                                                    <Label htmlFor="email">Email</Label>
+                                                    <Label htmlFor="propertyId">Property ID</Label>
                                                     <AvField
-                                                        name="email"
-                                                        placeholder="Email"
-                                                        type="email"
-                                                        errorMessage=" Please enter vaild email id."
+                                                        name="propertyId"
+                                                        placeholder="Property ID"
+                                                        type="propertyId"
+                                                        errorMessage=" Please enter valid property id."
                                                         className="form-control"
                                                         validate={{required: {value: true}}}
-                                                        id="email"
-                                                    />
-                                                </div>
-                                            </Col>
-                                            <Col md="4">
-                                                <div className="mb-3">
-                                                    <Label htmlFor="phone">Phone</Label>
-                                                    <AvField
-                                                        name="phone"
-                                                        placeholder="phone"
-                                                        type="phone"
-                                                        errorMessage=" Please enter valid phone id."
-                                                        className="form-control"
-                                                        validate={{required: {value: true}}}
-                                                        id="phone"
+                                                        id="propertyId"
                                                     />
                                                 </div>
                                             </Col>

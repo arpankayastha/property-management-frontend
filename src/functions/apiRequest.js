@@ -5,6 +5,13 @@ const getRequestOptions = {
     }
 };
 
+const deleteRequestOptions = {
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+};
+
 const postRequestOptions = {
     method: 'POST',
     headers: {
@@ -23,4 +30,8 @@ export const getList = async (urlQueryParams, module, url = null) => {
 export const post = async (values, module) => {
     postRequestOptions.body = JSON.stringify(values);
     return await fetch(process.env.REACT_APP_API_ENDPOINT + module, postRequestOptions);
+}
+
+export const deleteEntry = async (urlParams, module, url = null) => {
+    return await fetch((url) ? url : process.env.REACT_APP_API_ENDPOINT + module + '/' + urlParams, deleteRequestOptions);
 }

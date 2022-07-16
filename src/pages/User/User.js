@@ -5,12 +5,15 @@ import {Link, NavLink as RRNavLink} from 'react-router-dom';
 import {checkPermissions, sortCaret} from '../../functions/functions'
 import debounce from 'lodash.debounce';
 import {toast} from "react-toastify";
-import {getList} from "../../functions/apiRequest";
+import {deleteEntry, getList} from "../../functions/apiRequest";
+import DeleteConfirm from "../../components/Common/DeleteConfirm";
 // import { Button } from "react-bootstrap";
 const UserList = (props) => {
     const [user, setUser] = useState([])
     const [totalUser, setTotalUser] = useState(0)
     const [isSpinner, setIsSpinner] = useState(false)
+    const [inProgress, setInProgress] = useState(false);
+    const [deleteIndex, setDeleteIndex] = useState();
 
     const params = new URLSearchParams(window.location.search)
     const pageNumber = params.get('page') ?? 1;
@@ -79,8 +82,38 @@ const UserList = (props) => {
             align: 'left',
             sortCaret: sortCaret,
             headerStyle: {cursor: 'pointer'}
+        },
+        {
+            dataField: "action",
+            text: "Action",
+            formatter: actionEvent,
+            sort: false,
+            headerAlign: 'center',
+            align: 'center',
+            headerStyle: {cursor: 'pointer'}
         }
     ];
+
+    function actionEvent(cell, row, rowIndex, formatExtraData) {
+        return (
+            <>
+                <div className="d-flex">
+                    <Link
+                        className="btn btn-primary waves-effect waves-light me-2 mb-1"
+                        as={Link}
+                        to={`/user/${row.id}/edit`}
+                    >
+                        <i className="fas fa-edit"/>
+                    </Link>
+                    <DeleteConfirm
+                        title={"Are you sure?"}
+                        text={"Once deleted, you will not be able to recover this user data!"}
+                        onConfirm={() => deleteItem(row.id, rowIndex)}
+                    />
+                </div>
+            </>
+        );
+    }
 
     function userDetail(cell, row, rowIndex, formatExtraData) {
         return (
@@ -96,6 +129,37 @@ const UserList = (props) => {
                 }
             </>
         );
+    }
+
+    const deleteItem = async (id, index) => {
+        if (inProgress) {
+            return false
+        } else {
+            setDeleteIndex(index)
+            try {
+                setInProgress(true);
+                deleteEntry(id, 'users')
+                    .then(response => response.json())
+                    .then(response => {
+                        if (response.success) {
+                            setInProgress(false);
+                            let list = [...state.data];
+                            if (list && list.length > 0) {
+                                list.splice(deleteIndex, 1);
+                                setUser(list)
+                                setState({data: list})
+                                setTotalUser(totalUser - 1)
+                            }
+                            toast.success(response.message);
+                        } else {
+                            toast.error(response.message);
+                        }
+                    });
+            } catch (e) {
+                toast.error(e.message);
+                setInProgress(false);
+            }
+        }
     }
 
     const delaySearch = useCallback(debounce(({page, sizePerPage, searchText, sortField, sortOrder}) => {

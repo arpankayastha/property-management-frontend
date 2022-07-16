@@ -67,6 +67,11 @@ import Lock from "../pages/Lock/Lock"
 // import CreateUser from "../pages/User/CreateUser"
 import LockUsageList from "../pages/Lock/LockUsageList"
 
+//Hotel
+import Hotel from "../pages/Hotel/Hotel";
+import CreateHotel from "../pages/Hotel/CreateHotel";
+import HotelDetail from "../pages/Hotel/HotelDetail";
+
 //Property
 import Property from "../pages/Property/Property";
 import CreateProperty from "../pages/Property/CreateProperty";
@@ -80,6 +85,13 @@ const userRoutes = [
     {path: "/user/create", component: CreateUser},
     {path: "/user/:userId/edit", component: CreateUser},
     {path: "/user/:userId/general", component: UserDetail},
+
+    // Hotel
+    {path: "/hotel", component: Hotel},
+    {path: "/hotel/create", component: CreateHotel},
+    {path: "/hotel/:hotelId/edit", component: CreateHotel},
+    {path: "/hotel/:hotelId/general", component: HotelDetail},
+
 
     // Property
     {path: "/property", component: Property},
