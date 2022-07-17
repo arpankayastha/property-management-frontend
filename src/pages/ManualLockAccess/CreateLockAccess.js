@@ -1,37 +1,38 @@
 import React, {useState} from "react"
 
-import {Button, Card, CardBody, Col, Container, Label, Row, Spinner} from "reactstrap"
-import {AvField, AvForm, AvGroup, AvInput} from "availity-reactstrap-validation"
+import {Button, Card, CardBody, Col, Container, Input, Label, Row, Spinner} from "reactstrap"
+import {AvField, AvForm} from "availity-reactstrap-validation"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 //Import Breadcrumb
-import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {get, getList, post} from "../../functions/apiRequest";
+import {getList, post} from "../../functions/apiRequest";
+import {toast} from "react-toastify";
 import Select from "react-select";
 
 const FormValidations = (props) => {
-    let {propertyId} = props.match.params;
-
     const [inProgress, setInProgress] = useState(false)
-    const [defaultValues, setDefaultValues] = useState();
-    const [selectedHotel, setSelectedHotel] = React.useState()
-    const [hotels, setHotels] = useState([]);
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
+    const [defaultValues, setDefaultValues] = useState()
+
+    const [selectedProperty, setSelectedProperty] = React.useState()
+    const [properties, setProperties] = useState([]);
 
     React.useEffect(() => {
-        if (hotels.length === 0) {
+        if (properties.length === 0) {
             getList({
                 pageNumber: 1,
                 sizePerPage: 1000,
                 sortField: null,
                 sortOrder: null,
                 searchText: null
-            }, 'hotels')
+            }, 'properties')
                 .then(response => response.json())
                 .then(response => {
-                    if (response.success && response.data.hotels.length) {
-                        setHotels(response.data.hotels)
+                    if (response.success && response.data.properties.length) {
+                        setProperties(response.data.properties)
                     } else {
-                        toast.error("No hotels available to assign with properties. Create hotel first.");
+                        toast.error("No properties available to assign with properties. Create property first.");
                         setTimeout(() => {
                             window.history.back();
                         }, 1500);
@@ -39,23 +40,6 @@ const FormValidations = (props) => {
                 });
         }
     }, []);
-
-    React.useEffect(() => {
-        if (propertyId) {
-            get(propertyId, 'properties')
-                .then(response => response.json())
-                .then(response => {
-                    if (response.success) {
-                        setDefaultValues(response.data.property);
-                        if (response.data.property && response.data.property.hotel) {
-                            setSelectedHotel(response.data.property.hotel.id);
-                        }
-                    } else {
-                        toast.error(response.message)
-                    }
-                });
-        }
-    }, [propertyId]);
 
     const handleSubmit = async (event, errors, values) => {
         if (errors.length > 0) {
@@ -67,68 +51,62 @@ const FormValidations = (props) => {
             values.id = parseInt(defaultValues.id)
         }
 
-        if (selectedHotel) {
-            values.hotel = {id: selectedHotel}
+        if (selectedProperty) {
+            values.propertyId = selectedProperty;
         }
 
         try {
             setInProgress(true);
-            post(values, 'properties')
+            post(values, 'locks/manual-lock-access')
                 .then(response => response.json())
                 .then(data => {
-                    setInProgress(false)
+                    setInProgress(false);
                     if (data.success) {
                         toast.success(data.message);
                         setTimeout(() => {
-                            props.history.push(`/property`);
+                            window.location.reload();
                         }, 800);
                     } else {
                         toast.error(data.message)
                     }
                 });
         } catch (e) {
-            setInProgress(false);
+            setInProgress(false)
         }
     }
 
     return (
         <React.Fragment>
-            {/* <ToastContainer /> */}
             <div className="page-content">
                 <Container fluid={false}>
-                    <h2>{propertyId ? "Edit" : "Create"} Property</h2>
+                    <h2>Assign Lock Access</h2>
                     <Row>
                         <Col xl="12">
                             <Card>
                                 <CardBody>
-                                    <h4 className="card-title">Property</h4>
-                                    <p className="card-title-desc">
-
-                                    </p>
-                                    {((propertyId && defaultValues) || !propertyId) &&
                                     <AvForm className="needs-validation" onSubmit={handleSubmit} model={defaultValues}>
                                         <Row>
-                                            <Col md="6">
+                                            <Col md="4">
                                                 <div className="mb-3">
-                                                    <Label htmlFor="name">Hotel</Label>
+                                                    <Label htmlFor="name">Property</Label>
                                                     <Select
                                                         value={
-                                                            hotels.filter(option => option.id === selectedHotel)
+                                                            properties.filter(option => option.id === selectedProperty)
                                                         }
-                                                        options={hotels}
-                                                        name="hotelId"
+                                                        options={properties}
+                                                        name="propertyId"
                                                         className={`${inProgress ? 'select-error' : ''}`}
                                                         classNamePrefix="select"
                                                         validate={{required: {value: true}}}
                                                         getOptionLabel={(option) => option.name}
                                                         getOptionValue={(option) => option.id}
-                                                        onChange={(data) => setSelectedHotel(data.id)}
+                                                        onChange={(data) => setSelectedProperty(data.id)}
                                                     />
                                                 </div>
                                             </Col>
-                                            <Col md="6">
+                                            <Col md="4">
                                                 <div className="mb-3">
-                                                    <Label htmlFor="name">Name</Label>
+                                                    <Label htmlFor="name">Person Name</Label>
                                                     <AvField
                                                         name="name"
                                                         placeholder="Name"
@@ -140,46 +118,52 @@ const FormValidations = (props) => {
                                                     />
                                                 </div>
                                             </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col md="6">
-                                                <div className="mb-3">
-                                                    <Label htmlFor="propertyId">Property ID</Label>
-                                                    <AvField
-                                                        name="propertyId"
-                                                        placeholder="Property ID"
-                                                        type="text"
-                                                        errorMessage=" Please enter valid property id."
-                                                        className="form-control"
-                                                        validate={{required: {value: true}}}
-                                                        id="propertyId"
-                                                    />
-                                                </div>
-                                            </Col>
-                                            <Col md="6">
-                                                <div className="mb-3">
-                                                    <Label htmlFor="propertyId">Property Lock File</Label>
-                                                    <AvField
-                                                        name="propertyLockFile"
-                                                        placeholder="Property Lock FILE URL"
-                                                        type="url"
-                                                        errorMessage=" Please enter valid property lock file url."
-                                                        className="form-control"
-                                                        validate={{required: {value: true}}}
-                                                        id="propertyLockFile"
-                                                    />
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                        <Row>
                                             <Col md="4">
                                                 <div className="mb-3">
-                                                    <Label>Is Active?</Label>
-                                                    <div className="form-check form-switch form-switch-lg">
-                                                        <AvGroup check>
-                                                            <AvInput type="checkbox" name="isActive"/>
-                                                        </AvGroup>
-                                                    </div>
+                                                    <Label htmlFor="contactNumber">Contact Number</Label>
+                                                    <AvField
+                                                        name="contactNumber"
+                                                        placeholder="Contact Number"
+                                                        type="phone"
+                                                        errorMessage=" Please enter valid contact number."
+                                                        className="form-control"
+                                                        validate={{required: {value: true}}}
+                                                        id="contactNumber"
+                                                    />
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col md="6">
+                                                <div className="mb-3">
+                                                    <Label htmlFor="phone">Start Date</Label>
+                                                    <Input
+                                                        className="form-control"
+                                                        type="datetime-local"
+                                                        id="example-datetime-local-input"
+                                                        name="startDate"
+                                                        value={startDate}
+                                                        onChange={(event) => {
+                                                            setStartDate(event.target.value);
+                                                        }
+                                                        }
+                                                    />
+                                                </div>
+                                            </Col>
+                                            <Col md="6">
+                                                <div className="mb-3">
+                                                    <Label htmlFor="phone">End Date</Label>
+                                                    <Input
+                                                        className="form-control"
+                                                        type="datetime-local"
+                                                        id="example-datetime-local-input"
+                                                        name="endDate"
+                                                        value={endDate}
+                                                        onChange={(event) => {
+                                                            setEndDate(event.target.value);
+                                                        }
+                                                        }
+                                                    />
                                                 </div>
                                             </Col>
                                         </Row>
@@ -195,7 +179,6 @@ const FormValidations = (props) => {
                                             </Button>
                                         }
                                     </AvForm>
-                                    }
                                 </CardBody>
                             </Card>
                         </Col>

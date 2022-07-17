@@ -41,7 +41,6 @@ const FormValidations = (props) => {
 
         try {
             setInProgress(true);
-            console.log({values});
             post(values, 'hotels')
                 .then(response => response.json())
                 .then(data => {

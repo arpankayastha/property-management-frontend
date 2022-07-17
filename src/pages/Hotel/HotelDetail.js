@@ -94,7 +94,7 @@ const HotelDetail = (props) => {
                                                                                 <td>
                                                                                     <a href={`/property/${item.id}/general`}>
                                                                                         <p className="font-size-15 mb-1 py-2 fw-semibold"><span
-                                                                                            className="text-muted font-size-14 fw-normal">{item?.name}</span>
+                                                                                            className="font-size-14 fw-normal">{item?.name}</span>
                                                                                         </p>
                                                                                     </a>
                                                                                 </td>
@@ -114,7 +114,7 @@ const HotelDetail = (props) => {
                                                 </Row>
                                                 :
                                                 <Card className="vh-100 p-4 text-center">
-                                                    <h5 className="mt-5">Loading...</h5>
+                                                    <h5 className="mt-5">No Properties available...</h5>
                                                 </Card>
                                             }
                                         </CardBody>
@@ -122,7 +122,6 @@ const HotelDetail = (props) => {
                                 </Col>
                             </Row>
                         </>
-
                         :
                         <Row>
                             <Card className="vh-100 p-4 text-center">

@@ -35,16 +35,29 @@ const PropertyDetail = (props) => {
                                             <CardTitle className="h3 border-bottom border-2 pb-3">Property
                                                 Details</CardTitle>
                                             <Row>
-                                                <Col xl={8}>
+                                                <Col xl={6}>
                                                     <p className="font-size-15 mb-1 border-bottom py-2 fw-semibold">Name
                                                         : <span
                                                             className="text-muted font-size-14 fw-normal">{defaultValues?.name}</span>
                                                     </p>
-                                                    <p className="font-size-15 mb-1 pt-2 fw-semibold">Property ID
+                                                    <p className="font-size-15 mb-1 border-bottom py-2 fw-semibold">Property
+                                                        ID
                                                         : <span
                                                             className="text-muted font-size-14 fw-normal">{defaultValues?.propertyId}</span>
                                                     </p>
-                                                    <p className="font-size-15 mb-1 pt-2 fw-semibold">Hotel Name
+                                                </Col>
+                                                <Col xl={6}>
+                                                    <p className="font-size-15 mb-1 border-bottom py-2 fw-semibold">Property
+                                                        Lock File
+                                                        : <a href={defaultValues?.propertyLockFile}>
+                                                            <span
+                                                                className="font-size-14 fw-normal">
+                                                                {defaultValues?.propertyLockFile}
+                                                            </span>
+                                                        </a>
+                                                    </p>
+                                                    <p className="font-size-15 mb-1 border-bottom py-2 fw-semibold">Hotel
+                                                        Name
                                                         : <span
                                                             className="text-muted font-size-14 fw-normal">{defaultValues?.hotel?.name}</span>
                                                     </p>

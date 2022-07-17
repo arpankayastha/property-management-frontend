@@ -77,6 +77,9 @@ import Property from "../pages/Property/Property";
 import CreateProperty from "../pages/Property/CreateProperty";
 import PropertyDetail from "../pages/Property/PropertyDetail";
 
+//Manual Lock Access
+import CreateLockAccess from "../pages/ManualLockAccess/CreateLockAccess";
+
 const userRoutes = [
     {path: "/dashboard", component: Dashboard},
 
@@ -101,9 +104,10 @@ const userRoutes = [
 
     // Lock
     {path: "/lock", component: Lock},
-    {path: "/lock/create", component: CreateProperty},
-    {path: "/lock/:lockId/edit", component: CreateProperty},
     {path: "/lock/:lockId/general", component: LockUsageList},
+
+    //manual-lock
+    {path: "/manual-lock", component: CreateLockAccess},
 
     // Forms
     {path: "/basic-elements", component: BasicElements},

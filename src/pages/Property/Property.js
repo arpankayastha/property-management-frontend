@@ -75,6 +75,16 @@ const PropertyList = (props) => {
             headerStyle: {cursor: 'pointer'}
         },
         {
+            dataField: 'hotel.name',
+            text: 'Hotel',
+            sort: true,
+            formatter: hotelName,
+            headerAlign: 'left',
+            align: 'left',
+            sortCaret: sortCaret,
+            headerStyle: {cursor: 'pointer'}
+        },
+        {
             dataField: 'propertyId',
             text: 'Property ID',
             sort: true,
@@ -127,6 +137,16 @@ const PropertyList = (props) => {
                         <span className="d-sm-block">{row.name}</span>
                     </div>
                 }
+            </>
+        );
+    }
+
+    function hotelName(cell, row, rowIndex, formatExtraData) {
+        return (
+            <>
+                <NavLink className="ps-0" tag={RRNavLink} to={`/hotel/${encodeURIComponent(row.hotel.id)}/general`}>
+                    <span className="d-sm-block">  {row.hotel.name}</span>
+                </NavLink>
             </>
         );
     }

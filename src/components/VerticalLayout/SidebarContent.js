@@ -136,8 +136,14 @@ const SidebarContent = props => {
                         </li>
                         <li>
                             <Link to="/lock" className="waves-effect">
-                                <i className="uil-lock"/>
+                                <i className="uil-lock-alt"/>
                                 <span> Locks History</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/manual-lock" className="waves-effect">
+                                <i className="uil-lock-access"/>
+                                <span> Manual Lock Assign</span>
                             </Link>
                         </li>
                     </ul>
