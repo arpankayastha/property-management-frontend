@@ -13,6 +13,7 @@ const FormValidations = (props) => {
     const [inProgress, setInProgress] = useState(false)
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
+    const [passcode, setPasscode] = useState();
     const [defaultValues, setDefaultValues] = useState()
 
     const [selectedProperty, setSelectedProperty] = React.useState()
@@ -86,7 +87,7 @@ const FormValidations = (props) => {
                                 <CardBody>
                                     <AvForm className="needs-validation" onSubmit={handleSubmit} model={defaultValues}>
                                         <Row>
-                                            <Col md="4">
+                                            <Col md="6">
                                                 <div className="mb-3">
                                                     <Label htmlFor="name">Property</Label>
                                                     <Select
@@ -104,7 +105,7 @@ const FormValidations = (props) => {
                                                     />
                                                 </div>
                                             </Col>
-                                            <Col md="4">
+                                            <Col md="6">
                                                 <div className="mb-3">
                                                     <Label htmlFor="name">Person Name</Label>
                                                     <AvField
@@ -118,7 +119,9 @@ const FormValidations = (props) => {
                                                     />
                                                 </div>
                                             </Col>
-                                            <Col md="4">
+                                        </Row>
+                                        <Row>
+                                            <Col md="6">
                                                 <div className="mb-3">
                                                     <Label htmlFor="contactNumber">Contact Number</Label>
                                                     <AvField
@@ -129,6 +132,31 @@ const FormValidations = (props) => {
                                                         className="form-control"
                                                         validate={{required: {value: true}}}
                                                         id="contactNumber"
+                                                        onChange={(event) => {
+                                                            let contactNumber = event.target.value;
+                                                            let passcodeValue = contactNumber.substr(contactNumber.length - 4);
+                                                            setPasscode(passcodeValue);
+                                                        }
+                                                        }
+                                                    />
+                                                </div>
+                                            </Col>
+                                            <Col md="6">
+                                                <div className="mb-3">
+                                                    <Label htmlFor="passcode">Passcode</Label>
+                                                    <AvField
+                                                        name="passcode"
+                                                        placeholder="passcode"
+                                                        type="text"
+                                                        errorMessage=" Please enter valid 4 digit passcode."
+                                                        className="form-control"
+                                                        value={passcode}
+                                                        validate={
+                                                            {
+                                                                required: {value: true}
+                                                            }
+                                                        }
+                                                        id="passcode"
                                                     />
                                                 </div>
                                             </Col>
