@@ -2,6 +2,7 @@
     "name": "admin",
     "version": "1.0.0",
     "private": true,
+    "homepage": "https://admin.42samaj.com",
     "dependencies": {
         "@apollo/client": "^3.4.11",
         "@fullcalendar/bootstrap": "^5.4.0",

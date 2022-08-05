@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import {getList, post} from "../../functions/apiRequest";
 import {toast} from "react-toastify";
 import Select from "react-select";
+import moment from "moment/moment";
+
 
 const FormValidations = (props) => {
     const [inProgress, setInProgress] = useState(false)
@@ -56,6 +58,10 @@ const FormValidations = (props) => {
             values.propertyId = selectedProperty;
         }
 
+
+        values.startDate = moment(startDate).valueOf();
+        values.endDate = moment(endDate).valueOf();
+        console.log({values});
         try {
             setInProgress(true);
             post(values, 'locks/manual-lock-access')
@@ -65,7 +71,7 @@ const FormValidations = (props) => {
                     if (data.success) {
                         toast.success(data.message);
                         setTimeout(() => {
-                            window.location.reload();
+                            // window.location.reload();
                         }, 800);
                     } else {
                         toast.error(data.message)
