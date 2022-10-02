@@ -119,7 +119,7 @@
         "start:development": "env-cmd -f .env.development react-scripts start",
         "start:production": "env-cmd -f .env.production react-scripts start",
         "build": "react-scripts build",
-        "build:testing": "env-cmd -f .env.testing react-scripts build",
+        "build:development": "env-cmd -f .env.development react-scripts build",
         "build:production": "env-cmd -f .env.production react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"

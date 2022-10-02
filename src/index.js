@@ -9,7 +9,7 @@ import { setContext } from '@apollo/client/link/context';
 import store from "./store"
 
 const httpLink = createHttpLink({
-    uri: process.env.REACT_APP_GQL_API_ENDPOINT,
+    uri: process.env.REACT_APP_API_ENDPOINT,
 });
 
 const authLink = setContext((_, { headers }) => {

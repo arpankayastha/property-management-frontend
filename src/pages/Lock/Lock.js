@@ -33,9 +33,9 @@ const LockList = (props) => {
             .then(response => {
                 if (response.success) {
                     setIsSpinner(false)
-                    setLock(response.data.locks.list)
-                    setTotalLock(response.data.locks.total)
-                    setState({data: response.data.locks.list})
+                    setLock(response.data.locks?.list)
+                    setTotalLock(response.data.locks?.total)
+                    setState({data: response.data.locks?.list})
                 } else {
                     toast.error(response.message)
                 }
